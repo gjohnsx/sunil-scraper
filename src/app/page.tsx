@@ -1229,7 +1229,7 @@ ${items}
                   <div className="h-48 relative overflow-hidden">
                     <div className="absolute inset-0 animate-crawl-urls">
                       <div className="space-y-2 font-mono text-xs">
-                        <div className="text-orange-600 font-bold mb-1">🗺️ Mapping site structure...</div>
+                        <div className="text-orange-600 font-bold mb-1">Mapping site structure...</div>
                         <div className="text-zinc-500">► https://firecrawl.dev</div>
                         <div className="text-zinc-400 ml-4">├─ /blog</div>
                         <div className="text-orange-500 ml-8">├─ /2025/openai-launches-gpt5</div>
@@ -1238,7 +1238,7 @@ ${items}
                         <div className="text-zinc-400 ml-4">├─ /docs</div>
                         <div className="text-zinc-400 ml-4">├─ /pricing</div>
                         <div className="text-zinc-400 ml-4">└─ /api</div>
-                        <div className="text-orange-600 font-bold mt-2">✓ 5 pages selected</div>
+                        <div className="text-orange-600 font-bold mt-2">5 pages selected</div>
                       </div>
                     </div>
                   </div>
@@ -1939,7 +1939,7 @@ ${items}
                       ) : (
                         <div className="flex-1 flex items-center justify-center">
                           <div className="text-center">
-                            <div className="text-4xl mb-3">📄</div>
+                            <div className="text-4xl mb-3">CSV</div>
                             <p className="text-sm text-zinc-500">No data scraped yet</p>
                             <p className="text-xs text-zinc-400 mt-1">Complete the scraping process to see a preview</p>
                           </div>

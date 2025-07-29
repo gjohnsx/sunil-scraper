@@ -2,17 +2,19 @@
 
 A powerful web scraping and content migration tool built with Next.js, TypeScript, and the Firecrawl API. Extract structured data from any website and export it in formats ready for your CMS, database, or data pipeline.
 
-🔗 **Repository**: [github.com/mendableai/firecrawl-migrator](https://github.com/mendableai/firecrawl-migrator)
+**Repository**: [github.com/mendableai/firecrawl-migrator](https://github.com/mendableai/firecrawl-migrator)
 
-## Features
+## What it does
 
-- **Smart Website Mapping**: Analyze and visualize website structure with an interactive tree view
-- **Selective URL Scraping**: Choose exactly which pages to scrape with intelligent filtering
-- **Custom Data Schemas**: Define custom fields to extract specific content (title, date, author, etc.)
-- **Batch Processing**: Efficiently scrape multiple URLs in a single operation
-- **Multiple Export Formats**: Export to CSV, JSON, or custom formats
-- **Real-time Progress**: Monitor scraping progress with live updates
-- **Cost-Effective**: Uses Map + Batch Scrape strategy for efficiency
+Scrapes content from websites and exports structured data. Map a site, select URLs, define what data to extract, and export as CSV.
+
+## Key Features
+
+- Map website structure to discover all pages
+- Select specific URLs to scrape
+- Define custom fields (title, date, content, etc.)
+- Export data as CSV
+- Batch process multiple pages at once
 
 ## Use Cases
 
