@@ -12,7 +12,7 @@ A powerful web scraping and content migration tool built with Next.js, TypeScrip
 - **Batch Processing**: Efficiently scrape multiple URLs in a single operation
 - **Multiple Export Formats**: Export to CSV, JSON, or custom formats
 - **Real-time Progress**: Monitor scraping progress with live updates
-- **Cost-Effective**: Uses Map + Batch Scrape strategy to minimize API credits
+- **Cost-Effective**: Uses Map + Batch Scrape strategy for efficiency
 
 ## Use Cases
 
@@ -56,8 +56,6 @@ Add your Firecrawl API key to the file:
 FIRECRAWL_API_KEY=fc-YOUR_ACTUAL_API_KEY_HERE
 ```
 
-⚠️ **Important**: Replace `fc-YOUR_ACTUAL_API_KEY_HERE` with your actual API key from Firecrawl dashboard.
-
 ### 5. Run the development server
 ```bash
 npm run dev
@@ -71,7 +69,7 @@ You should see the Firecrawl Content Migrator interface. If you see an API key e
 ## How It Works
 
 ### Step 1: Map Website Structure
-Enter a URL to analyze the website's structure. The mapping operation discovers all available pages and organizes them in a hierarchical tree view. (Uses 2 API credits)
+Enter a URL to analyze the website's structure. The mapping operation discovers all available pages and organizes them in a hierarchical tree view.
 
 ### Step 2: Select Content
 Browse the interactive tree and select which pages to scrape. Use the built-in filters to:
@@ -91,86 +89,12 @@ Start the batch scraping process to extract structured data from all selected pa
 - JSON for APIs and applications
 - Custom formats for specific CMS platforms
 
-## API Endpoints
-
-### POST /api/map
-Maps website structure and returns discovered URLs
-```json
-{
-  "url": "https://example.com/blog",
-  "limit": 200
-}
-```
-
-### POST /api/crawl
-Extracts content from selected URLs with schema
-```json
-{
-  "url": "https://example.com",
-  "selectedUrls": ["url1", "url2"],
-  "schema": {
-    "properties": {
-      "title": { "type": "string" },
-      "date": { "type": "string" },
-      "content": { "type": "string" }
-    }
-  }
-}
-```
-
-## Advanced Features
-
-### Smart URL Detection
-The migrator intelligently identifies content patterns:
-- Blog posts vs category pages
-- Product pages vs listings
-- Documentation vs navigation
-
-### Schema Auto-Detection
-Analyzes page content to suggest relevant fields:
-- Detects prices, dates, authors
-- Identifies metadata patterns
-- Recognizes common content structures
-
-### Efficient Credit Usage
-Optimized strategy minimizes API costs:
-- Map operation: 2 credits (one-time)
-- Batch scrape: 1 credit per URL
-- Example: 100 blog posts = 102 total credits
-
-## Project Structure
-
-```
-firecrawl-content-migrator/
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── crawl/        # Content extraction endpoint
-│   │   │   └── map/          # Website mapping endpoint
-│   │   ├── page.tsx          # Main application UI
-│   │   └── layout.tsx        # App layout
-│   └── components/
-│       ├── layout/           # Layout components
-│       └── ui/               # Reusable UI components
-├── public/                   # Static assets
-└── package.json             # Dependencies
-```
-
 ## Troubleshooting
 
-### "Firecrawl API key not configured"
-- Ensure `.env.local` exists with valid API key
-- Restart dev server after adding key
-
-### "Failed to map website"
-- Verify URL is accessible
-- Check API key has credits
-- Try a different URL path
-
-### Batch scraping fails
-- App automatically falls back to individual scraping
-- Check browser console for errors
-- Verify selected URLs are valid
+If you see **"Firecrawl API key not configured"**:
+- Make sure you created the `.env.local` file
+- Check that your API key starts with `fc-`
+- Restart the development server
 
 ## Development
 
@@ -187,11 +111,7 @@ npm run lint
 
 ## Contributing
 
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new features
-4. Submit a pull request
+Just fork, make your changes, and submit a PR!
 
 ## License
 
