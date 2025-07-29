@@ -2,6 +2,8 @@
 
 A powerful web scraping and content migration tool built with Next.js, TypeScript, and the Firecrawl API. Extract structured data from any website and export it in formats ready for your CMS, database, or data pipeline.
 
+🔗 **Repository**: [github.com/mendableai/firecrawl-migrator](https://github.com/mendableai/firecrawl-migrator)
+
 ## Features
 
 - **Smart Website Mapping**: Analyze and visualize website structure with an interactive tree view
@@ -27,30 +29,44 @@ A powerful web scraping and content migration tool built with Next.js, TypeScrip
 
 ## Quick Start
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd firecrawl-content-migrator
-   ```
+### 1. Clone the repository
+```bash
+git clone https://github.com/mendableai/firecrawl-migrator.git
+cd firecrawl-migrator
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 2. Install dependencies
+```bash
+npm install
+```
 
-3. **Configure environment**
-   Create a `.env.local` file:
-   ```env
-   FIRECRAWL_API_KEY=fc-YOUR_API_KEY_HERE
-   ```
+### 3. Get your Firecrawl API key
+- Sign up at [firecrawl.dev](https://firecrawl.dev)
+- Navigate to your dashboard
+- Copy your API key
 
-4. **Run the application**
-   ```bash
-   npm run dev
-   ```
+### 4. Configure environment variables
+Create a `.env.local` file in the root directory:
+```bash
+touch .env.local
+```
 
-5. **Open in browser**
-   Visit [http://localhost:3000](http://localhost:3000)
+Add your Firecrawl API key to the file:
+```env
+FIRECRAWL_API_KEY=fc-YOUR_ACTUAL_API_KEY_HERE
+```
+
+⚠️ **Important**: Replace `fc-YOUR_ACTUAL_API_KEY_HERE` with your actual API key from Firecrawl dashboard.
+
+### 5. Run the development server
+```bash
+npm run dev
+```
+
+### 6. Open the application
+Visit [http://localhost:3000](http://localhost:3000) in your browser
+
+You should see the Firecrawl Content Migrator interface. If you see an API key error, double-check your `.env.local` file.
 
 ## How It Works
 
