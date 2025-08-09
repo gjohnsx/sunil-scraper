@@ -1,0 +1,31 @@
+{
+  "favicon": "https://irp.cdn-website.com/78412f62/site_favicon_16_1722453343277.ico",
+  "viewport": [
+    "initial-scale=1, minimum-scale=1, maximum-scale=5, viewport-fit=cover",
+    "width=device-width, initial-scale=1"
+  ],
+  "language": "en",
+  "ogImage": "https://lirp.cdn-website.com/78412f62/dms3rep/multi/opt/social-networks-image-onekey-logo-1920w.png",
+  "description": "Be the local expert instantly with up-to-the-minute data and sleek reports and graphics personalized with your brand with InfoSparks and FastStats.\n",
+  "ogUrl": "https://corporate.onekeymls.com/products/marketstats",
+  "og:image": "https://lirp.cdn-website.com/78412f62/dms3rep/multi/opt/social-networks-image-onekey-logo-1920w.png",
+  "og:url": "https://corporate.onekeymls.com/products/marketstats",
+  "twitter:description": "Be the local expert instantly with up-to-the-minute data and sleek reports and graphics personalized with your brand with InfoSparks and FastStats.\n",
+  "og:title": "MarketStats by ShowingTime® | OneKey® MLS",
+  "title": "\n    \n    MarketStats by ShowingTime® | OneKey® MLS\n  \n  ",
+  "og:type": "website",
+  "twitter:card": "summary",
+  "twitter:title": "MarketStats by ShowingTime® | OneKey® MLS",
+  "twitter:image": "https://lirp.cdn-website.com/78412f62/dms3rep/multi/opt/social-networks-image-onekey-logo-1920w.png",
+  "og:description": "Be the local expert instantly with up-to-the-minute data and sleek reports and graphics personalized with your brand with InfoSparks and FastStats.\n",
+  "apple-mobile-web-app-capable": "yes",
+  "ogDescription": "Be the local expert instantly with up-to-the-minute data and sleek reports and graphics personalized with your brand with InfoSparks and FastStats.\n",
+  "ogTitle": "MarketStats by ShowingTime® | OneKey® MLS",
+  "scrapeId": "93f44a3d-f28b-48c7-b590-4cab6fbafc2d",
+  "sourceURL": "https://corporate.onekeymls.com/products/marketstats",
+  "url": "https://corporate.onekeymls.com/products/marketstats",
+  "statusCode": 200,
+  "contentType": "text/html;charset=utf-8",
+  "proxyUsed": "basic",
+  "creditsUsed": 5
+}

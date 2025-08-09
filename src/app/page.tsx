@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import { ChevronRightIcon, ChevronDownIcon } from 'lucide-react'
+import { ExcludePathsDropdown } from '@/components/exclude-paths-dropdown'
 
 type Step = 1 | 2 | 3 | 4
 type Platform = 'wordpress' | 'shopify' | 'webflow' | 'drupal' | 'squarespace' | 'wix' | 'csv' | 'custom' | null
@@ -293,7 +294,8 @@ function TreeView({ tree, selectedUrls, onSelectionChange, onMapNode, mappingNod
 
 export default function ContentMigratorPage() {
   const [currentStep, setCurrentStep] = useState<Step>(1)
-  const [sourceUrl, setSourceUrl] = useState('https://firecrawl.dev')
+  const [sourceUrl, setSourceUrl] = useState('https://corporate.onekeymls.com')
+  const [excludePaths, setExcludePaths] = useState<string[]>(['/address', '/home', '/realtor'])
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('webflow')
   const [exportFormat, setExportFormat] = useState('webflow')
   const [showSuccess, setShowSuccess] = useState(false)
@@ -302,8 +304,6 @@ export default function ContentMigratorPage() {
   const [loading, setLoading] = useState(false)
   const [loadingText, setLoadingText] = useState('')
   const [schemaFields, setSchemaFields] = useState<SchemaField[]>([
-    { name: 'title', type: 'string' },
-    { name: 'date', type: 'string' },
     { name: '', type: 'string' }
   ])
 
@@ -351,7 +351,8 @@ export default function ContentMigratorPage() {
         },
         body: JSON.stringify({
           url: path,
-          limit: 200
+          limit: 200,
+          excludePaths: excludePaths
         })
       })
       
@@ -543,7 +544,8 @@ export default function ContentMigratorPage() {
           },
           body: JSON.stringify({
             url: sourceUrl,
-            limit: 200
+            limit: 200,
+            excludePaths: excludePaths
           })
         })
         
@@ -758,7 +760,7 @@ export default function ContentMigratorPage() {
     try {
       // Add AbortController for timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 180000); // 3 minute timeout
+      const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 minute timeout for large batches
       
       const response = await fetch('/api/crawl', {
         method: 'POST',
@@ -772,7 +774,8 @@ export default function ContentMigratorPage() {
           limit: selectedUrls.length,
           includeRaw: saveRawResults,
           strategy: 'mapCrawl',
-          selectedUrls: selectedUrls
+          selectedUrls: selectedUrls,
+          excludePaths: excludePaths
         }),
         signal: controller.signal
       })
@@ -797,7 +800,7 @@ export default function ContentMigratorPage() {
       }
       setLoading(false)
       if (error instanceof Error && error.name === 'AbortError') {
-        alert('Crawl is taking longer than expected. Please try with fewer pages or check the URL.')
+        alert(`Crawl timeout after 10 minutes. With ${selectedUrls.length} pages at 5 credits each, you likely used ${selectedUrls.length * 5} credits. Check your Firecrawl dashboard - the pages were probably scraped successfully even though the app timed out waiting for results.`)
       } else {
         alert(error instanceof Error ? error.message : 'Failed to crawl website')
       }
@@ -1384,13 +1387,17 @@ ${items}
                     ) : (
                       <div className="bg-zinc-200 rounded-full p-0.5 animate-fade-in">
                         <div className="relative flex items-center">
+                          <ExcludePathsDropdown 
+                            excludePaths={excludePaths}
+                            onExcludePathsChange={setExcludePaths}
+                          />
                           <Input
                             id="sourceUrl"
                             type="url"
                             value={sourceUrl}
                             onChange={(e) => setSourceUrl(e.target.value)}
                             placeholder="https://example.com/blog"
-                            className="flex-1 h-12 text-base px-6 pr-16 bg-white rounded-full border-0 focus:ring-2 focus:ring-orange-500"
+                            className="flex-1 h-12 text-base pl-12 pr-16 bg-white rounded-full border-0 focus:ring-2 focus:ring-orange-500"
                             onKeyPress={(e) => e.key === 'Enter' && analyzeWebsite()}
                             autoFocus
                           />
@@ -1810,7 +1817,6 @@ ${items}
                     onClick={startCrawl}
                     className="flex-1"
                     disabled={
-                      schemaFields.filter(f => f.name).length === 0 || 
                       selectedUrls.length === 0
                     }
                   >
@@ -1885,7 +1891,7 @@ ${items}
                       variant="code"
                       onClick={() => {
                         // Reset state for new export
-                        setSourceUrl('https://firecrawl.dev')
+                        setSourceUrl('https://corporate.onekeymls.com')
                         setSelectedPlatform('webflow')
                         setExportFormat('webflow')
                         setCrawlData([])

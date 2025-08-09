@@ -95,6 +95,7 @@ The application uses a flexible schema system to extract structured data:
 - Apply Tailwind CSS classes directly (avoid custom CSS)
 - Use the `cn()` helper from `/src/lib/utils.ts` for conditional classes
 - Maintain existing import patterns using `@/` alias for src directory
+- **Component Naming**: Use kebab-case for React component file names (e.g., `react-component-like-this.tsx` instead of `LikeThis.tsx`)
 
 ## Testing Approach
 No test framework is currently configured. When implementing tests, check package.json and project structure first to determine the appropriate testing approach.
