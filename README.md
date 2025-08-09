@@ -1,28 +1,28 @@
-# Firecrawl Content Migrator
+# Sunil Scraper
 
-A powerful web scraping and content migration tool built with Next.js, TypeScript, and the Firecrawl API. Extract structured data from any website and export it in formats ready for your CMS, database, or data pipeline.
+A web scraping and content extraction tool built with Next.js and the Firecrawl API. Forked from [Firecrawl's Content Migrator](https://github.com/mendableai/firecrawl-migrator) with enhancements for batch processing and improved data export capabilities.
 
-**Repository**: [github.com/mendableai/firecrawl-migrator](https://github.com/mendableai/firecrawl-migrator)
+> ⚠️ **WARNING**: This tool requires a Firecrawl API key. The default placeholder `fc-YOUR_API_KEY` will NOT work. You must obtain your own API key from [firecrawl.dev](https://firecrawl.dev).
 
-## What it does
+## What's Changed from Original
 
-Scrapes content from websites and exports structured data. Map a site, select URLs, define what data to extract, and export as CSV.
+This fork includes several enhancements over the original Firecrawl Content Migrator:
+
+- **Improved batch processing**: Better error handling and fallback mechanisms for large-scale scraping operations
+- **Enhanced data export**: Additional export formats and improved CSV generation with proper encoding
+- **Schema inference**: Smarter automatic field detection based on content patterns (prices, dates, authors, etc.)
+- **UI improvements**: Better tree view for URL selection, collapsible JSON viewer, and clearer workflow steps
+- **Session management**: Tracks scraping sessions with detailed metadata and results
+- **Robust extraction**: Dual-format processing (Markdown + HTML) for more reliable data extraction
 
 ## Key Features
 
-- Map website structure to discover all pages
-- Select specific URLs to scrape
-- Define custom fields (title, date, content, etc.)
-- Export data as CSV
-- Batch process multiple pages at once
-
-## Use Cases
-
-- **Blog Migration**: Extract posts, metadata, and content from any blog platform
-- **E-commerce Data**: Scrape product information, prices, and descriptions
-- **News Archives**: Collect articles with dates, authors, and categories
-- **Documentation Sites**: Extract technical documentation with proper structure
-- **Content Audits**: Analyze and export existing website content
+- 🗺️ **Website Mapping**: Automatically discover and categorize all pages on a site
+- 🎯 **Selective Scraping**: Choose specific URLs or patterns to extract
+- 📊 **Smart Schema Detection**: Auto-detects common fields like prices, dates, and authors
+- 💾 **Multiple Export Formats**: CSV, JSON, and structured data ready for migration
+- ⚡ **Batch Processing**: Handle hundreds of pages efficiently with progress tracking
+- 🔄 **Fallback Mechanisms**: Automatic retry and individual request fallback on failures
 
 ## Prerequisites
 
@@ -33,8 +33,8 @@ Scrapes content from websites and exports structured data. Map a site, select UR
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/mendableai/firecrawl-migrator.git
-cd firecrawl-migrator
+git clone https://github.com/gjohnsx/sunil-scraper.git
+cd sunil-scraper
 ```
 
 ### 2. Install dependencies
@@ -48,6 +48,9 @@ npm install
 - Copy your API key
 
 ### 4. Configure environment variables
+
+⚠️ **CRITICAL**: You MUST add your own Firecrawl API key. The application will not work without it!
+
 Create a `.env.local` file in the root directory:
 ```bash
 touch .env.local
@@ -57,6 +60,8 @@ Add your Firecrawl API key to the file:
 ```env
 FIRECRAWL_API_KEY=fc-YOUR_ACTUAL_API_KEY_HERE
 ```
+
+Replace `fc-YOUR_ACTUAL_API_KEY_HERE` with your actual API key from [firecrawl.dev](https://firecrawl.dev)
 
 ### 5. Run the development server
 ```bash
@@ -91,12 +96,27 @@ Start the batch scraping process to extract structured data from all selected pa
 - JSON for APIs and applications
 - Custom formats for specific CMS platforms
 
-## Troubleshooting
+## Common Issues & Warnings
+
+### ⚠️ Default API Key Won't Work
+The repository includes a placeholder API key (`fc-YOUR_API_KEY`) that **will not function**. You must:
+1. Sign up at [firecrawl.dev](https://firecrawl.dev)
+2. Get your personal API key
+3. Replace the placeholder in `.env.local`
+
+### API Rate Limits
+Be aware of Firecrawl's rate limits:
+- Free tier has limited requests per month
+- Large batch operations may consume credits quickly
+- Monitor your usage on the Firecrawl dashboard
+
+### Troubleshooting
 
 If you see **"Firecrawl API key not configured"**:
-- Make sure you created the `.env.local` file
-- Check that your API key starts with `fc-`
-- Restart the development server
+- You haven't replaced the placeholder API key
+- Make sure `.env.local` exists and contains your real API key
+- Verify your API key starts with `fc-`
+- Restart the development server after adding the key
 
 ## Development
 
@@ -111,9 +131,25 @@ npm start
 npm run lint
 ```
 
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **UI**: shadcn/ui components + Tailwind CSS
+- **API**: Firecrawl SDK for web scraping
+- **State**: React hooks for client-side state management
+
 ## Contributing
 
-Just fork, make your changes, and submit a PR!
+Contributions are welcome! Feel free to:
+- Fork the repository
+- Create a feature branch
+- Submit a pull request
+
+## Credits
+
+- Original repository: [Firecrawl Content Migrator](https://github.com/mendableai/firecrawl-migrator) by Mendable AI
+- Firecrawl API: [firecrawl.dev](https://firecrawl.dev)
 
 ## License
 
@@ -121,6 +157,6 @@ MIT License - see LICENSE file for details
 
 ## Support
 
-- Create an issue on GitHub
-- Check [Firecrawl docs](https://docs.firecrawl.dev)
-- Join [Firecrawl Discord](https://discord.gg/firecrawl)
+- Open an issue on [GitHub](https://github.com/gjohnsx/sunil-scraper/issues)
+- Check [Firecrawl docs](https://docs.firecrawl.dev) for API documentation
+- Original project: [Firecrawl Discord](https://discord.gg/firecrawl)
