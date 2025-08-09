@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Firecrawl Content Migrator",
+  title: "Sunil's Scraper",
   description: "Turn any website into structured CMS-ready data in seconds",
   icons: {
     icon: '/firecrawl.svg',

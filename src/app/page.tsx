@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Layout, MainContent, Footer } from '@/components/layout/layout'
-import { Header } from '@/components/layout/header'
 import { Hero } from '@/components/layout/hero'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -1210,10 +1209,8 @@ ${items}
 
   return (
     <Layout>
-      <Header ctaHref="https://github.com/new?template_name=firecrawl-content-migrator&template_owner=mendableai" />
-      
       <Hero 
-        title="Firecrawl Content Migrator"
+        title="Sunil's Scraper"
         subtitle="Turn any website into structured CMS-ready data in seconds"
       />
       

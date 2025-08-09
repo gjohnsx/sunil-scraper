@@ -1,0 +1,632 @@
+# Crawl
+
+> Firecrawl can recursively search through a urls subdomains, and gather the content
+
+Firecrawl efficiently crawls websites to extract comprehensive data while bypassing blockers. The process:
+
+1. **URL Analysis:** Scans sitemap and crawls website to identify links
+2. **Traversal:** Recursively follows links to find all subpages
+3. **Scraping:** Extracts content from each page, handling JS and rate limits
+4. **Output:** Converts data to clean markdown or structured format
+
+This ensures thorough data collection from any starting URL.
+
+## Crawling
+
+### /crawl endpoint
+
+Used to crawl a URL and all accessible subpages. This submits a crawl job and returns a job ID to check the status of the crawl.
+
+<Warning>By default - Crawl will ignore sublinks of a page if they aren't children of the url you provide. So, the website.com/other-parent/blog-1 wouldn't be returned if you crawled website.com/blogs/. If you want website.com/other-parent/blog-1, use the `crawlEntireDomain` parameter. To crawl subdomains like blog.website.com when crawling website.com, use the `allowSubdomains` parameter.</Warning>
+
+### Installation
+
+<CodeGroup>
+  ```bash Python
+  pip install firecrawl-py
+  ```
+
+  ```bash Node
+  npm install @mendable/firecrawl-js
+  ```
+
+  ```bash Go
+  go get github.com/mendableai/firecrawl-go
+  ```
+
+  ```yaml Rust
+  # Add this to your Cargo.toml
+  [dependencies]
+  firecrawl = "^1.0"
+  tokio = { version = "^1", features = ["full"] }
+  ```
+</CodeGroup>
+
+### Usage
+
+<CodeGroup>
+  ```python Python
+  from firecrawl import FirecrawlApp, ScrapeOptions
+
+  app = FirecrawlApp(api_key="fc-YOUR_API_KEY")
+
+  # Crawl a website:
+  crawl_result = app.crawl_url(
+    'https://firecrawl.dev', 
+    limit=10, 
+    scrape_options=ScrapeOptions(formats=['markdown', 'html']),
+  )
+  print(crawl_result)
+  ```
+
+  ```js Node
+  import FirecrawlApp from '@mendable/firecrawl-js';
+
+  const app = new FirecrawlApp({apiKey: "fc-YOUR_API_KEY"});
+
+  const crawlResponse = await app.crawlUrl('https://firecrawl.dev', {
+    limit: 100,
+    scrapeOptions: {
+      formats: ['markdown', 'html'],
+    }
+  })
+
+  if (!crawlResponse.success) {
+    throw new Error(`Failed to crawl: ${crawlResponse.error}`)
+  }
+
+  console.log(crawlResponse)
+  ```
+
+  ```go Go
+  import (
+  	"fmt"
+  	"log"
+
+  	"github.com/mendableai/firecrawl-go"
+  )
+
+  func main() {
+  	// Initialize the FirecrawlApp with your API key
+  	apiKey := "fc-YOUR_API_KEY"
+  	apiUrl := "https://api.firecrawl.dev"
+  	version := "v1"
+
+  	app, err := firecrawl.NewFirecrawlApp(apiKey, apiUrl, version)
+  	if err != nil {
+  		log.Fatalf("Failed to initialize FirecrawlApp: %v", err)
+  	}
+
+  	// Crawl a website
+  	crawlStatus, err := app.CrawlUrl("https://firecrawl.dev", map[string]any{
+  		"limit": 100,
+  		"scrapeOptions": map[string]any{
+  			"formats": []string{"markdown", "html"},
+  		},
+  	})
+  	if err != nil {
+  		log.Fatalf("Failed to send crawl request: %v", err)
+  	}
+
+  	fmt.Println(crawlStatus) 
+  }
+  ```
+
+  ```rust Rust
+  use firecrawl::{crawl::{CrawlOptions, CrawlScrapeOptions, CrawlScrapeFormats}, FirecrawlApp};
+
+  #[tokio::main]
+  async fn main() {
+      // Initialize the FirecrawlApp with the API key
+      let app = FirecrawlApp::new("fc-YOUR_API_KEY").expect("Failed to initialize FirecrawlApp");
+
+      // Crawl a website
+      let crawl_options = CrawlOptions {
+          scrape_options: CrawlScrapeOptions {
+              formats: vec![ CrawlScrapeFormats::Markdown, CrawlScrapeFormats::HTML ].into(),
+              ..Default::default()
+          }.into(),
+          limit: 100.into(),
+          ..Default::default()
+      };
+
+      let crawl_result = app
+          .crawl_url("https://mendable.ai", crawl_options)
+          .await;
+
+      match crawl_result {
+          Ok(data) => println!("Crawl Result (used {} credits):\n{:#?}", data.credits_used, data.data),
+          Err(e) => eprintln!("Crawl failed: {}", e),
+      }
+  }
+  ```
+
+  ```bash cURL
+  curl -X POST https://api.firecrawl.dev/v1/crawl \
+      -H 'Content-Type: application/json' \
+      -H 'Authorization: Bearer YOUR_API_KEY' \
+      -d '{
+        "url": "https://docs.firecrawl.dev",
+        "limit": 100,
+        "scrapeOptions": {
+          "formats": ["markdown", "html"]
+        }
+      }'
+  ```
+</CodeGroup>
+
+### API Response
+
+If you're using cURL or `async crawl` functions on SDKs, this will return an `ID` where you can use to check the status of the crawl.
+
+<Note>If you're using the SDK, check the SDK response section [below](#sdk-response).</Note>
+
+```json
+{
+  "success": true,
+  "id": "123-456-789",
+  "url": "https://api.firecrawl.dev/v1/crawl/123-456-789"
+}
+```
+
+### Check Crawl Job
+
+Used to check the status of a crawl job and get its result.
+
+<Note>This endpoint only works for crawls that are in progress or crawls that have completed recently. </Note>
+
+<CodeGroup>
+  ```python Python
+  crawl_status = app.check_crawl_status("<crawl_id>")
+  print(crawl_status)
+  ```
+
+  ```js Node
+  const crawlResponse = await app.checkCrawlStatus("<crawl_id>");
+
+  if (!crawlResponse.success) {
+    throw new Error(`Failed to check crawl status: ${crawlResponse.error}`)
+  }
+
+  console.log(crawlResponse)
+  ```
+
+  ```go Go
+  // Get crawl status
+  crawlStatus, err := app.CheckCrawlStatus("<crawl_id>")
+
+  if err != nil {
+    log.Fatalf("Failed to get crawl status: %v", err)
+  }
+
+  fmt.Println(crawlStatus)
+  ```
+
+  ```rust Rust
+  let crawl_status = app.check_crawl_status(crawl_id).await;
+
+  match crawl_status {
+      Ok(data) => println!("Crawl Status:\n{:#?}", data),
+      Err(e) => eprintln!("Check crawl status failed: {}", e),
+  }
+  ```
+
+  ```bash cURL
+  curl -X GET https://api.firecrawl.dev/v1/crawl/<crawl_id> \
+      -H 'Content-Type: application/json' \
+      -H 'Authorization: Bearer YOUR_API_KEY'
+  ```
+</CodeGroup>
+
+#### Response Handling
+
+The response varies based on the crawl's status.
+
+For not completed or large responses exceeding 10MB, a `next` URL parameter is provided. You must request this URL to retrieve the next 10MB of data. If the `next` parameter is absent, it indicates the end of the crawl data.
+
+The skip parameter sets the maximum number of results returned for each chunk of results returned.
+
+<Info>
+  The skip and next parameter are only relavent when hitting the api directly. If you're using the SDK, we handle this for you and will return all the results at once.
+</Info>
+
+<CodeGroup>
+  ```json Scraping
+  {
+    "status": "scraping",
+    "total": 36,
+    "completed": 10,
+    "creditsUsed": 10,
+    "expiresAt": "2024-00-00T00:00:00.000Z",
+    "next": "https://api.firecrawl.dev/v1/crawl/123-456-789?skip=10",
+    "data": [
+      {
+        "markdown": "[Firecrawl Docs home page![light logo](https://mintlify.s3-us-west-1.amazonaws.com/firecrawl/logo/light.svg)!...",
+        "html": "<!DOCTYPE html><html lang=\"en\" class=\"js-focus-visible lg:[--scroll-mt:9.5rem]\" data-js-focus-visible=\"\">...",
+        "metadata": {
+          "title": "Build a 'Chat with website' using Groq Llama 3 | Firecrawl",
+          "language": "en",
+          "sourceURL": "https://docs.firecrawl.dev/learn/rag-llama3",
+          "description": "Learn how to use Firecrawl, Groq Llama 3, and Langchain to build a 'Chat with your website' bot.",
+          "ogLocaleAlternate": [],
+          "statusCode": 200
+        }
+      },
+      ...
+    ]
+  }
+  ```
+
+  ```json Completed
+  {
+    "status": "completed",
+    "total": 36,
+    "completed": 36,
+    "creditsUsed": 36,
+    "expiresAt": "2024-00-00T00:00:00.000Z",
+    "next": "https://api.firecrawl.dev/v1/crawl/123-456-789?skip=26",
+    "data": [
+      {
+        "markdown": "[Firecrawl Docs home page![light logo](https://mintlify.s3-us-west-1.amazonaws.com/firecrawl/logo/light.svg)!...",
+        "html": "<!DOCTYPE html><html lang=\"en\" class=\"js-focus-visible lg:[--scroll-mt:9.5rem]\" data-js-focus-visible=\"\">...",
+        "metadata": {
+          "title": "Build a 'Chat with website' using Groq Llama 3 | Firecrawl",
+          "language": "en",
+          "sourceURL": "https://docs.firecrawl.dev/learn/rag-llama3",
+          "description": "Learn how to use Firecrawl, Groq Llama 3, and Langchain to build a 'Chat with your website' bot.",
+          "ogLocaleAlternate": [],
+          "statusCode": 200
+        }
+      },
+      ...
+    ]
+  }
+  ```
+</CodeGroup>
+
+### SDK Response
+
+The SDK provides two ways to crawl URLs:
+
+1. **Synchronous Crawling** (`crawl_url`/`crawlUrl`):
+   * Waits for the crawl to complete and returns the full response
+   * Handles pagination automatically
+   * Recommended for most use cases
+
+<CodeGroup>
+  ```python Python
+  from firecrawl import FirecrawlApp, ScrapeOptions
+
+  app = FirecrawlApp(api_key="fc-YOUR_API_KEY")
+
+  # Crawl a website:
+  crawl_status = app.crawl_url(
+    'https://firecrawl.dev', 
+    limit=100, 
+    scrape_options=ScrapeOptions(formats=['markdown', 'html']),
+    poll_interval=30
+  )
+  print(crawl_status)
+  ```
+
+  ```js Node
+  import FirecrawlApp from '@mendable/firecrawl-js';
+
+  const app = new FirecrawlApp({apiKey: "fc-YOUR_API_KEY"});
+
+  const crawlResponse = await app.crawlUrl('https://firecrawl.dev', {
+    limit: 100,
+    scrapeOptions: {
+      formats: ['markdown', 'html'],
+    }
+  })
+
+  if (!crawlResponse.success) {
+    throw new Error(`Failed to crawl: ${crawlResponse.error}`)
+  }
+
+  console.log(crawlResponse)
+  ```
+</CodeGroup>
+
+The response includes the crawl status and all scraped data:
+
+<CodeGroup>
+  ```bash Python
+  success=True
+  status='completed'
+  completed=100
+  total=100
+  creditsUsed=100
+  expiresAt=datetime.datetime(2025, 4, 23, 19, 21, 17, tzinfo=TzInfo(UTC))
+  next=None
+  data=[
+    FirecrawlDocument(
+      markdown='[Day 7 - Launch Week III.Integrations DayApril 14th to 20th](...',
+      metadata={
+        'title': '15 Python Web Scraping Projects: From Beginner to Advanced',
+        ...
+        'scrapeId': '97dcf796-c09b-43c9-b4f7-868a7a5af722',
+        'sourceURL': 'https://www.firecrawl.dev/blog/python-web-scraping-projects',
+        'url': 'https://www.firecrawl.dev/blog/python-web-scraping-projects',
+        'statusCode': 200
+      }
+    ),
+    ...
+  ]
+  ```
+
+  ```json Node
+  {
+    success: true,
+    status: "completed",
+    completed: 100,
+    total: 100,
+    creditsUsed: 100,
+    expiresAt: "2025-04-23T19:28:45.000Z",
+    data: [
+      {
+        markdown: "[Day 7 - Launch Week III.Integrations DayApril ...",
+        html: `<!DOCTYPE html><html lang="en" class="light" style="color...`,
+        metadata: [Object],
+      },
+      ...
+    ]
+  }
+  ```
+</CodeGroup>
+
+2. **Asynchronous Crawling** (`async_crawl_url`/`asyncCrawlUrl`):
+   * Returns immediately with a crawl ID
+   * Allows manual status checking
+   * Useful for long-running crawls or custom polling logic
+
+<CodeGroup>
+  <AsyncCrawlPython />
+
+  <AsyncCrawlNode />
+</CodeGroup>
+
+## Faster Crawling
+
+Speed up your crawls by 500% when you don't need the freshest data. Add `maxAge` to your `scrapeOptions` to use cached page data when available.
+
+<CodeGroup>
+  ```python Python
+  from firecrawl import FirecrawlApp, ScrapeOptions
+
+  app = FirecrawlApp(api_key="fc-YOUR_API_KEY")
+
+  # Crawl with cached scraping - 500% faster for pages we've seen recently
+  crawl_result = app.crawl_url(
+      'https://firecrawl.dev', 
+      limit=100,
+      scrape_options=ScrapeOptions(
+          formats=['markdown'],
+          maxAge=3600000  # Use cached data if less than 1 hour old
+      )
+  )
+
+  for page in crawl_result['data']:
+      print(f"URL: {page['metadata']['sourceURL']}")
+      print(f"Content: {page['markdown'][:200]}...")
+  ```
+
+  ```javascript JavaScript
+  import FirecrawlApp from '@mendable/firecrawl-js';
+
+  const app = new FirecrawlApp({apiKey: "fc-YOUR_API_KEY"});
+
+  // Crawl with cached scraping - 500% faster for pages we've seen recently
+  const crawlResult = await app.crawlUrl('https://firecrawl.dev', {
+    limit: 100,
+    scrapeOptions: {
+      formats: ['markdown'],
+      maxAge: 3600000 // Use cached data if less than 1 hour old
+    }
+  });
+
+  crawlResult.data.forEach(page => {
+    console.log(`URL: ${page.metadata.sourceURL}`);
+    console.log(`Content: ${page.markdown.substring(0, 200)}...`);
+  });
+  ```
+
+  ```go Go
+  package main
+
+  import (
+      "fmt"
+      "log"
+      "github.com/mendableai/firecrawl-go"
+  )
+
+  func main() {
+      app, err := firecrawl.NewFirecrawlApp("fc-YOUR_API_KEY")
+      if err != nil {
+          log.Fatalf("Failed to initialize FirecrawlApp: %v", err)
+      }
+
+      // Crawl with cached scraping - 500% faster for pages we've seen recently
+      crawlParams := map[string]interface{}{
+          "limit": 100,
+          "scrapeOptions": map[string]interface{}{
+              "formats": []string{"markdown"},
+              "maxAge":  3600000, // Use cached data if less than 1 hour old
+          },
+      }
+
+      crawlResult, err := app.CrawlURL("https://firecrawl.dev", crawlParams)
+      if err != nil {
+          log.Fatalf("Failed to crawl URL: %v", err)
+      }
+
+      for _, page := range crawlResult.Data {
+          fmt.Printf("URL: %s\n", page.Metadata["sourceURL"])
+          if len(page.Markdown) > 200 {
+              fmt.Printf("Content: %s...\n", page.Markdown[:200])
+          } else {
+              fmt.Printf("Content: %s\n", page.Markdown)
+          }
+      }
+  }
+  ```
+
+  ```rust Rust
+  use firecrawl::FirecrawlApp;
+  use std::collections::HashMap;
+
+  #[tokio::main]
+  async fn main() -> Result<(), Box<dyn std::error::Error>> {
+      let app = FirecrawlApp::new("fc-YOUR_API_KEY").expect("Failed to initialize FirecrawlApp");
+
+      // Crawl with cached scraping - 500% faster for pages we've seen recently
+      let mut scrape_options = HashMap::new();
+      scrape_options.insert("formats", vec!["markdown"]);
+      scrape_options.insert("maxAge", 3600000); // Use cached data if less than 1 hour old
+
+      let mut crawl_params = HashMap::new();
+      crawl_params.insert("limit", 100);
+      crawl_params.insert("scrapeOptions", scrape_options);
+
+      let crawl_result = app.crawl_url("https://firecrawl.dev", Some(crawl_params)).await?;
+
+      for page in crawl_result.data {
+          println!("URL: {}", page.metadata.get("sourceURL").unwrap_or(&"Unknown".to_string()));
+          let content = page.markdown.unwrap_or_default();
+          if content.len() > 200 {
+              println!("Content: {}...", &content[..200]);
+          } else {
+              println!("Content: {}", content);
+          }
+      }
+
+      Ok(())
+  }
+  ```
+
+  ```bash cURL
+  curl -X POST https://api.firecrawl.dev/v1/crawl \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer fc-YOUR_API_KEY' \
+    -d '{
+      "url": "https://firecrawl.dev",
+      "limit": 100,
+      "scrapeOptions": {
+        "formats": ["markdown"],
+        "maxAge": 3600000
+      }
+    }'
+  ```
+</CodeGroup>
+
+**How it works:**
+
+* Each page in your crawl checks if we have cached data newer than `maxAge`
+* If yes, returns instantly from cache (500% faster)
+* If no, scrapes the page fresh and caches the result
+* Perfect for crawling documentation sites, product catalogs, or other relatively static content
+
+For more details on `maxAge` usage, see the [Faster Scraping](/features/fast-scraping) documentation.
+
+## Crawl WebSocket
+
+Firecrawl's WebSocket-based method, `Crawl URL and Watch`, enables real-time data extraction and monitoring. Start a crawl with a URL and customize it with options like page limits, allowed domains, and output formats, ideal for immediate data processing needs.
+
+<CodeGroup>
+  ```python Python
+  # inside an async function...
+  nest_asyncio.apply()
+
+  # Define event handlers
+  def on_document(detail):
+      print("DOC", detail)
+
+  def on_error(detail):
+      print("ERR", detail['error'])
+
+  def on_done(detail):
+      print("DONE", detail['status'])
+
+      # Function to start the crawl and watch process
+  async def start_crawl_and_watch():
+      # Initiate the crawl job and get the watcher
+      watcher = app.crawl_url_and_watch('firecrawl.dev', limit=5)
+
+      # Add event listeners
+      watcher.add_event_listener("document", on_document)
+      watcher.add_event_listener("error", on_error)
+      watcher.add_event_listener("done", on_done)
+
+      # Start the watcher
+      await watcher.connect()
+
+  # Run the event loop
+  await start_crawl_and_watch()
+  ```
+
+  ```js Node
+  const watch = await app.crawlUrlAndWatch('mendable.ai', { excludePaths: ['blog/*'], limit: 5});
+
+  watch.addEventListener("document", doc => {
+    console.log("DOC", doc.detail);
+  });
+
+  watch.addEventListener("error", err => {
+    console.error("ERR", err.detail.error);
+  });
+
+  watch.addEventListener("done", state => {
+    console.log("DONE", state.detail.status);
+  });
+  ```
+</CodeGroup>
+
+## Crawl Webhook
+
+You can configure webhooks to receive real-time notifications as your crawl progresses. This allows you to process pages as they're scraped instead of waiting for the entire crawl to complete.
+
+```bash cURL
+curl -X POST https://api.firecrawl.dev/v1/crawl \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer YOUR_API_KEY' \
+    -d '{
+      "url": "https://docs.firecrawl.dev",
+      "limit": 100,
+      "webhook": {
+        "url": "https://your-domain.com/webhook",
+        "metadata": {
+          "any_key": "any_value"
+        },
+        "events": ["started", "page", "completed"]
+      }
+    }'
+```
+
+For comprehensive webhook documentation including event types, payload structure, and implementation examples, see the [Webhooks documentation](/features/webhooks).
+
+### Quick Reference
+
+**Event Types:**
+
+* `crawl.started` - When the crawl begins
+* `crawl.page` - For each page successfully scraped
+* `crawl.completed` - When the crawl finishes
+* `crawl.failed` - If the crawl encounters an error
+
+**Basic Payload:**
+
+```json
+{
+  "success": true,
+  "type": "crawl.page",
+  "id": "crawl-job-id",
+  "data": [...], // Page data for 'page' events
+  "metadata": {}, // Your custom metadata
+  "error": null
+}
+```
+
+<Note>
+  For detailed webhook configuration, security best practices, and troubleshooting, visit the [Webhooks documentation](/features/webhooks).
+</Note>
